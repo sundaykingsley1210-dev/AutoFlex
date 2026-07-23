@@ -8,6 +8,21 @@ const Payment = require('../models/Payment');
 const PaymentSchedule = require('../models/PaymentSchedule');
 const Notification = require('../models/Notification');
 
+router.post('/bootstrap-admin', async (req, res) => {
+  try {
+    const adminExists = await User.findOne({ role: 'admin' });
+    if (adminExists) {
+      return res.status(400).json({ success: false, message: 'Admin already exists' });
+    }
+    const { email } = req.body;
+    const user = await User.findOneAndUpdate({ email }, { role: 'admin' }, { new: true });
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+    res.status(200).json({ success: true, message: 'User promoted to admin', user });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+});
+
 router.get('/stats', protect, adminOnly, async (req, res) => {
   try {
     const totalCustomers = await User.countDocuments({ role: 'customer' });
