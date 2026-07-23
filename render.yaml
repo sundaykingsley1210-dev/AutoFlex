@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: autoflex-backend
+    env: node
+    region: oregon
+    plan: free
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: MONNIEPAY_SECRET_KEY
+        sync: false
+      - key: MONNIEPAY_PUBLIC_KEY
+        sync: false
+      - key: MONNIEPAY_BASE_URL
+        value: https://api.monniefy.com
+      - key: FRONTEND_URL
+        value: https://frontend-hofatu6go-investor-platform.vercel.app

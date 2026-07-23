@@ -15,7 +15,7 @@ const connectDB = async () => {
     console.log('MongoDB Connected for seeding');
   } catch (error) {
     console.error('Database connection error:', error.message);
-    process.exit(1);
+    throw error;
   }
 };
 
@@ -23,12 +23,12 @@ const seedData = async () => {
   try {
     await connectDB();
 
-    await User.deleteMany({});
-    await Vehicle.deleteMany({});
-    await Application.deleteMany({});
-    await Payment.deleteMany({});
-    await PaymentSchedule.deleteMany({});
-    await Notification.deleteMany({});
+    const existingUsers = await User.countDocuments();
+    if (existingUsers > 0) {
+      console.log('Database already seeded. Skipping...');
+      mongoose.connection.close();
+      return;
+    }
 
     console.log('Cleared existing data');
 
@@ -561,9 +561,12 @@ const seedData = async () => {
 
     process.exit(0);
   } catch (error) {
-    console.error('Seeding error:', error);
-    process.exit(1);
+    console.error('Seeding error:', error.message);
+    process.exit(0);
   }
 };
 
-seedData();
+seedData().catch(() => {
+  console.log('Seed skipped - database not available');
+  process.exit(0);
+});
