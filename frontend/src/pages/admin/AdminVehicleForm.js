@@ -53,8 +53,8 @@ const AdminVehicleForm = () => {
           <div className="card p-6">
             <h2 className="font-semibold mb-4">Pricing & Financing</h2>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div><label className="label">Price (₦)</label><input type="number" className="input" value={form.price} onChange={e => update('price', e.target.value)} required /></div>
-              <div><label className="label">Deposit (₦)</label><input type="number" className="input" value={form.depositAmount} onChange={e => update('depositAmount', e.target.value)} required /></div>
+              <div><label className="label">Price ($)</label><input type="number" className="input" value={form.price} onChange={e => update('price', e.target.value)} required /></div>
+              <div><label className="label">Deposit ($)</label><input type="number" className="input" value={form.depositAmount} onChange={e => update('depositAmount', e.target.value)} required /></div>
               <div><label className="label">Installment Months</label><select className="input" value={form.installmentMonths} onChange={e => update('installmentMonths', e.target.value)}>{[12, 24, 36, 48].map(m => <option key={m} value={m}>{m}</option>)}</select></div>
             </div>
           </div>

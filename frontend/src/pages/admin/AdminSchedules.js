@@ -9,7 +9,7 @@ const AdminSchedules = () => {
 
   useEffect(() => { api.get('/admin/schedules').then(res => setSchedules(res.data.schedules || [])).catch(() => {}).finally(() => setLoading(false)); }, []);
 
-  const formatPrice = (p) => new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN', minimumFractionDigits: 0 }).format(p);
+  const formatPrice = (p) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }).format(p);
   if (loading) return <div className="min-h-screen flex items-center justify-center"><Loading /></div>;
 
   return (

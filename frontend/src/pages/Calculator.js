@@ -21,7 +21,7 @@ const Calculator = () => {
     }).catch(() => {});
   }, []);
 
-  const formatPrice = (p) => new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN', minimumFractionDigits: 0 }).format(p);
+  const formatPrice = (p) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }).format(p);
 
   if (!selectedVehicle) return <div className="min-h-screen flex items-center justify-center"><Loading /></div>;
 

@@ -8,7 +8,7 @@ const Register = () => {
   const [step, setStep] = useState(1);
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [form, setForm] = useState({ firstName: '', lastName: '', email: '', phone: '', password: '', confirmPassword: '', street: '', city: '', state: '', zipCode: '', country: 'Nigeria', employer: '', position: '', monthlyIncome: '' });
+  const [form, setForm] = useState({ firstName: '', lastName: '', email: '', phone: '', password: '', confirmPassword: '', street: '', city: '', state: '', zipCode: '', country: 'United States', employer: '', position: '', monthlyIncome: '' });
   const { register } = useAuth();
   const navigate = useNavigate();
   const update = (field, value) => setForm({ ...form, [field]: value });
@@ -58,7 +58,7 @@ const Register = () => {
                 <div><label className="label">Last Name</label><input className="input" placeholder="Doe" value={form.lastName} onChange={e => update('lastName', e.target.value)} required /></div>
               </div>
               <div><label className="label">Email</label><div className="relative"><FaEnvelope className="absolute left-3 top-1/2 -translate-y-1/2 text-secondary-400 text-sm" /><input type="email" className="input pl-10" placeholder="you@example.com" value={form.email} onChange={e => update('email', e.target.value)} required /></div></div>
-              <div><label className="label">Phone</label><div className="relative"><FaPhone className="absolute left-3 top-1/2 -translate-y-1/2 text-secondary-400 text-sm" /><input className="input pl-10" placeholder="+234 800 000 0000" value={form.phone} onChange={e => update('phone', e.target.value)} required /></div></div>
+              <div><label className="label">Phone</label><div className="relative"><FaPhone className="absolute left-3 top-1/2 -translate-y-1/2 text-secondary-400 text-sm" /><input className="input pl-10" placeholder="+1 (555) 000-0000" value={form.phone} onChange={e => update('phone', e.target.value)} required /></div></div>
               <div><label className="label">Password</label><div className="relative"><FaLock className="absolute left-3 top-1/2 -translate-y-1/2 text-secondary-400 text-sm" /><input type={showPass ? 'text' : 'password'} className="input pl-10 pr-10" placeholder="••••••••" value={form.password} onChange={e => update('password', e.target.value)} required /><button type="button" onClick={() => setShowPass(!showPass)} className="absolute right-3 top-1/2 -translate-y-1/2 text-secondary-400 hover:text-white">{showPass ? <FaEyeSlash /> : <FaEye />}</button></div></div>
               <div><label className="label">Confirm Password</label><div className="relative"><FaLock className="absolute left-3 top-1/2 -translate-y-1/2 text-secondary-400 text-sm" /><input type="password" className="input pl-10" placeholder="••••••••" value={form.confirmPassword} onChange={e => update('confirmPassword', e.target.value)} required /></div></div>
             </div>
@@ -68,12 +68,12 @@ const Register = () => {
               <h2 className="text-lg font-semibold mb-4">Address Details</h2>
               <div><label className="label">Street Address</label><div className="relative"><FaMapMarkerAlt className="absolute left-3 top-1/2 -translate-y-1/2 text-secondary-400 text-sm" /><input className="input pl-10" placeholder="123 Main Street" value={form.street} onChange={e => update('street', e.target.value)} required /></div></div>
               <div className="grid grid-cols-2 gap-4">
-                <div><label className="label">City</label><input className="input" placeholder="Lagos" value={form.city} onChange={e => update('city', e.target.value)} required /></div>
-                <div><label className="label">State</label><input className="input" placeholder="Lagos State" value={form.state} onChange={e => update('state', e.target.value)} required /></div>
+                <div><label className="label">City</label><input className="input" placeholder="Austin" value={form.city} onChange={e => update('city', e.target.value)} required /></div>
+                <div><label className="label">State</label><input className="input" placeholder="Texas" value={form.state} onChange={e => update('state', e.target.value)} required /></div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div><label className="label">Zip Code</label><input className="input" placeholder="100001" value={form.zipCode} onChange={e => update('zipCode', e.target.value)} /></div>
-                <div><label className="label">Country</label><input className="input" placeholder="Nigeria" value={form.country} onChange={e => update('country', e.target.value)} /></div>
+                <div><label className="label">Country</label><input className="input" placeholder="United States" value={form.country} onChange={e => update('country', e.target.value)} /></div>
               </div>
             </div>
           )}
@@ -82,7 +82,7 @@ const Register = () => {
               <h2 className="text-lg font-semibold mb-4">Employment Details</h2>
               <div><label className="label">Employer</label><div className="relative"><FaBuilding className="absolute left-3 top-1/2 -translate-y-1/2 text-secondary-400 text-sm" /><input className="input pl-10" placeholder="Company name" value={form.employer} onChange={e => update('employer', e.target.value)} required /></div></div>
               <div><label className="label">Position</label><div className="relative"><FaBriefcase className="absolute left-3 top-1/2 -translate-y-1/2 text-secondary-400 text-sm" /><input className="input pl-10" placeholder="Job title" value={form.position} onChange={e => update('position', e.target.value)} required /></div></div>
-              <div><label className="label">Monthly Income (₦)</label><div className="relative"><FaMoneyBill className="absolute left-3 top-1/2 -translate-y-1/2 text-secondary-400 text-sm" /><input type="number" className="input pl-10" placeholder="500000" value={form.monthlyIncome} onChange={e => update('monthlyIncome', e.target.value)} required /></div></div>
+              <div><label className="label">Monthly Income ($)</label><div className="relative"><FaMoneyBill className="absolute left-3 top-1/2 -translate-y-1/2 text-secondary-400 text-sm" /><input type="number" className="input pl-10" placeholder="500000" value={form.monthlyIncome} onChange={e => update('monthlyIncome', e.target.value)} required /></div></div>
               <label className="flex items-center gap-2 text-sm text-secondary-400 mt-4">
                 <input type="checkbox" className="rounded bg-secondary-700 border-secondary-600" required /> I agree to the <a href="#" className="text-primary-400">Terms of Service</a> and <a href="#" className="text-primary-400">Privacy Policy</a>
               </label>

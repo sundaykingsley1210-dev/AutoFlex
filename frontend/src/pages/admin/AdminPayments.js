@@ -9,7 +9,7 @@ const AdminPayments = () => {
 
   useEffect(() => { api.get('/admin/payments').then(res => setPayments(res.data.payments || [])).catch(() => {}).finally(() => setLoading(false)); }, []);
 
-  const formatPrice = (p) => new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN', minimumFractionDigits: 0 }).format(p);
+  const formatPrice = (p) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }).format(p);
   const filtered = filter === 'all' ? payments : payments.filter(p => p.status === filter);
   const totalRevenue = payments.filter(p => p.status === 'successful').reduce((a, p) => a + p.amount, 0);
 

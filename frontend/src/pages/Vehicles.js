@@ -25,15 +25,19 @@ const Vehicles = () => {
   const fuelTypes = ['Petrol', 'Diesel', 'Electric', 'Hybrid'];
   const transmissions = ['Automatic', 'Manual'];
 
+  const bodyTypeMap = { Sedan: 'sedan', SUV: 'suv', Hatchback: 'hatchback', Truck: 'truck', Coupe: 'coupe', Convertible: 'convertible' };
+  const fuelTypeMap = { Petrol: 'petrol', Diesel: 'diesel', Electric: 'electric', Hybrid: 'hybrid' };
+  const transmissionMap = { Automatic: 'automatic', Manual: 'manual' };
+
   const fetchVehicles = async () => {
     setLoading(true);
     try {
       const params = new URLSearchParams();
       if (search) params.append('search', search);
       if (brand) params.append('brand', brand);
-      if (bodyType) params.append('bodyType', bodyType);
-      if (fuelType) params.append('fuelType', fuelType);
-      if (transmission) params.append('transmission', transmission);
+      if (bodyType) params.append('bodyType', bodyTypeMap[bodyType] || bodyType);
+      if (fuelType) params.append('fuelType', fuelTypeMap[fuelType] || fuelType);
+      if (transmission) params.append('transmission', transmissionMap[transmission] || transmission);
       if (minPrice) params.append('minPrice', minPrice);
       if (maxPrice) params.append('maxPrice', maxPrice);
       params.append('sort', sort);
@@ -49,7 +53,7 @@ const Vehicles = () => {
 
   const clearFilters = () => { setSearch(''); setBrand(''); setBodyType(''); setFuelType(''); setTransmission(''); setMinPrice(''); setMaxPrice(''); setPage(1); };
 
-  const formatPrice = (p) => new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN', minimumFractionDigits: 0 }).format(p);
+  const formatPrice = (p) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }).format(p);
   const totalPages = Math.ceil(total / limit);
 
   const FilterSidebar = () => (

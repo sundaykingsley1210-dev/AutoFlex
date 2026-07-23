@@ -20,7 +20,7 @@ const Profile = () => {
   const handleSave = async (e) => {
     e.preventDefault(); setSaving(true);
     try {
-      await updateProfile({ ...form, address: { street: form.street, city: form.city, state: form.state, zipCode: form.zipCode, country: 'Nigeria' } });
+      await updateProfile({ ...form, address: { street: form.street, city: form.city, state: form.state, zipCode: form.zipCode, country: 'United States' } });
       toast.success('Profile updated!');
     } catch (err) { toast.error(err.response?.data?.message || 'Update failed'); } finally { setSaving(false); }
   };

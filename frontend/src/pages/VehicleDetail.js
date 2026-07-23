@@ -18,7 +18,7 @@ const VehicleDetail = () => {
     api.get(`/vehicles/${id}`).then(res => setVehicle(res.data.vehicle || res.data)).catch(() => toast.error('Vehicle not found')).finally(() => setLoading(false));
   }, [id]);
 
-  const formatPrice = (p) => new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN', minimumFractionDigits: 0 }).format(p);
+  const formatPrice = (p) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }).format(p);
 
   if (loading) return <div className="min-h-screen flex items-center justify-center"><Loading /></div>;
   if (!vehicle) return <div className="min-h-screen flex items-center justify-center"><div className="text-center"><FaCar className="text-6xl text-secondary-600 mx-auto mb-4" /><h2 className="text-2xl font-bold">Vehicle Not Found</h2><Link to="/vehicles" className="btn-primary mt-4 inline-block">Back to Vehicles</Link></div></div>;

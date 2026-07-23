@@ -17,7 +17,7 @@ const AdminApplications = () => {
     try { await api.put(`/applications/${id}/review`, { status, rejectionReason: status === 'rejected' ? 'Does not meet criteria' : '' }); toast.success(`Application ${status}`); setSelected(null); fetchApps(); } catch (err) { toast.error(err.response?.data?.message || 'Failed'); }
   };
 
-  const formatPrice = (p) => new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN', minimumFractionDigits: 0 }).format(p);
+  const formatPrice = (p) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }).format(p);
   const filtered = filter === 'all' ? applications : applications.filter(a => a.status === filter);
   const statusColors = { pending: 'badge-warning', under_review: 'badge-info', approved: 'badge-success', rejected: 'badge-danger', active: 'badge-success', completed: 'badge-info' };
 

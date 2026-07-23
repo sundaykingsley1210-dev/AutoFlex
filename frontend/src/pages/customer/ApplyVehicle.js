@@ -25,7 +25,7 @@ const ApplyVehicle = () => {
   }, [vehicleId, navigate]);
 
   const update = (field, value) => setForm(f => ({ ...f, [field]: value }));
-  const formatPrice = (p) => new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN', minimumFractionDigits: 0 }).format(p);
+  const formatPrice = (p) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }).format(p);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -63,7 +63,7 @@ const ApplyVehicle = () => {
           <div className="card p-6">
             <h2 className="text-lg font-semibold mb-4">Payment Plan</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div><label className="label">Deposit Amount (₦)</label><input type="number" className="input" value={form.depositAmount} onChange={e => update('depositAmount', e.target.value)} min={vehicle.depositAmount} max={vehicle.price * 0.5} required /></div>
+              <div><label className="label">Deposit Amount ($)</label><input type="number" className="input" value={form.depositAmount} onChange={e => update('depositAmount', e.target.value)} min={vehicle.depositAmount} max={vehicle.price * 0.5} required /></div>
               <div><label className="label">Repayment Duration</label><select className="input" value={form.installmentMonths} onChange={e => update('installmentMonths', Number(e.target.value))}>
                 {[12, 24, 36, 48].map(m => <option key={m} value={m}>{m} months</option>)}
               </select></div>
@@ -97,7 +97,7 @@ const ApplyVehicle = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div><label className="label">Employer</label><input className="input" placeholder="Company name" value={form.employer} onChange={e => update('employer', e.target.value)} required /></div>
               <div><label className="label">Position</label><input className="input" placeholder="Job title" value={form.position} onChange={e => update('position', e.target.value)} required /></div>
-              <div><label className="label">Monthly Income (₦)</label><input type="number" className="input" placeholder="500000" value={form.monthlyIncome} onChange={e => update('monthlyIncome', e.target.value)} required /></div>
+              <div><label className="label">Monthly Income ($)</label><input type="number" className="input" placeholder="500000" value={form.monthlyIncome} onChange={e => update('monthlyIncome', e.target.value)} required /></div>
             </div>
           </div>
 

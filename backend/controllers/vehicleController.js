@@ -22,9 +22,9 @@ exports.getAllVehicles = async (req, res) => {
     }
 
     if (brand) query.brand = { $regex: brand, $options: 'i' };
-    if (bodyType) query.bodyType = bodyType;
-    if (fuelType) query.fuelType = fuelType;
-    if (transmission) query.transmission = transmission;
+    if (bodyType) query.bodyType = { $regex: `^${bodyType}$`, $options: 'i' };
+    if (fuelType) query.fuelType = { $regex: `^${fuelType}$`, $options: 'i' };
+    if (transmission) query.transmission = { $regex: `^${transmission}$`, $options: 'i' };
     if (minPrice || maxPrice) {
       query.price = {};
       if (minPrice) query.price.$gte = Number(minPrice);

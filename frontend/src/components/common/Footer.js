@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { FaCar, FaFacebook, FaTwitter, FaInstagram, FaLinkedin, FaEnvelope, FaPhone, FaMapMarkerAlt } from 'react-icons/fa';
 
 const Footer = () => (
-  <footer className="bg-secondary-950 border-t border-secondary-800 pt-16 pb-8">
+  <footer className="bg-secondary-900 border-t border-secondary-800 pt-16 pb-8">
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
         <div>
@@ -40,8 +40,8 @@ const Footer = () => (
         <div>
           <h3 className="text-white font-semibold mb-4">Contact Us</h3>
           <div className="space-y-3">
-            <div className="flex items-center gap-3 text-secondary-400 text-sm"><FaMapMarkerAlt className="text-primary-400" /> 123 Auto Street, Lagos, Nigeria</div>
-            <div className="flex items-center gap-3 text-secondary-400 text-sm"><FaPhone className="text-primary-400" /> +234 800 AUTO FLEX</div>
+            <div className="flex items-center gap-3 text-secondary-400 text-sm"><FaMapMarkerAlt className="text-primary-400" /> 123 Auto Street, Austin, TX 78701</div>
+            <div className="flex items-center gap-3 text-secondary-400 text-sm"><FaPhone className="text-primary-400" /> +1 (800) 555-AUTO</div>
             <div className="flex items-center gap-3 text-secondary-400 text-sm"><FaEnvelope className="text-primary-400" /> support@autoflex.com</div>
           </div>
         </div>

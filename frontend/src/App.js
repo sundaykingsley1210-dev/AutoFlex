@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { AuthProvider } from './context/AuthContext';
@@ -32,6 +32,7 @@ import AdminNotifications from './pages/admin/AdminNotifications';
 
 function App() {
   return (
+    <Router>
     <AuthProvider>
       <div className="min-h-screen flex flex-col">
         <Navbar />
@@ -66,6 +67,7 @@ function App() {
         <ToastContainer position="top-right" theme="dark" autoClose={3000} />
       </div>
     </AuthProvider>
+    </Router>
   );
 }
 

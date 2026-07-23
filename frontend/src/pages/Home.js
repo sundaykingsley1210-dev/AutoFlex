@@ -25,8 +25,8 @@ const Home = () => {
   ];
 
   const testimonials = [
-    { name: 'Adebayo Johnson', role: 'Business Owner', image: 'https://randomuser.me/api/portraits/men/32.jpg', text: 'AutoFlex made it incredibly easy to get my dream car. The flexible payment plan fits perfectly with my business cash flow. Highly recommended!', rating: 5 },
-    { name: 'Sarah Williams', role: 'Software Engineer', image: 'https://randomuser.me/api/portraits/women/44.jpg', text: 'The process was smooth from start to finish. I was approved within 24 hours and driving my new car the same week. Amazing service!', rating: 5 },
+    { name: 'James Rodriguez', role: 'Business Owner', image: 'https://randomuser.me/api/portraits/men/32.jpg', text: 'AutoFlex made it incredibly easy to get my dream car. The flexible payment plan fits perfectly with my business cash flow. Highly recommended!', rating: 5 },
+    { name: 'Sarah Mitchell', role: 'Software Engineer', image: 'https://randomuser.me/api/portraits/women/44.jpg', text: 'The process was smooth from start to finish. I was approved within 24 hours and driving my new car the same week. Amazing service!', rating: 5 },
     { name: 'Michael Chen', role: 'Medical Doctor', image: 'https://randomuser.me/api/portraits/men/67.jpg', text: 'As a young professional, AutoFlex helped me own a car without breaking the bank. The monthly payments are very reasonable. Thank you AutoFlex!', rating: 5 },
   ];
 
@@ -38,7 +38,7 @@ const Home = () => {
     { q: 'What happens if I miss a payment?', a: 'We offer a 5-day grace period. If payment is not received, a late fee may apply. Contact us immediately if you are having difficulty making a payment.' },
   ];
 
-  const formatPrice = (price) => new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN', minimumFractionDigits: 0 }).format(price);
+  const formatPrice = (price) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }).format(price);
 
   const [openFaq, setOpenFaq] = useState(-1);
 
@@ -50,7 +50,7 @@ const Home = () => {
         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1920)', backgroundSize: 'cover', backgroundPosition: 'center' }}></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
           <div className="max-w-3xl">
-            <div className="inline-block px-4 py-2 rounded-full glass text-primary-300 text-sm font-medium mb-6">🚗 Nigeria's #1 Car Financing Platform</div>
+            <div className="inline-block px-4 py-2 rounded-full glass text-primary-300 text-sm font-medium mb-6">🚗 America's #1 Car Financing Platform</div>
             <h1 className="text-5xl md:text-7xl font-black mb-6 leading-tight">
               Drive Your <span className="gradient-text">Dream Car.</span><br />Pay Your Way.
             </h1>
@@ -74,7 +74,7 @@ const Home = () => {
       <section className="py-16 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {[{ num: '500+', label: 'Cars Available' }, { num: '10,000+', label: 'Happy Customers' }, { num: '98%', label: 'Approval Rate' }, { num: '₦50B+', label: 'Cars Financed' }].map((s, i) => (
+            {[{ num: '500+', label: 'Cars Available' }, { num: '10,000+', label: 'Happy Customers' }, { num: '98%', label: 'Approval Rate' }, { num: '$50B+', label: 'Cars Financed' }].map((s, i) => (
               <div key={i} className="text-center glass rounded-xl p-6">
                 <div className="text-3xl md:text-4xl font-black gradient-text mb-2">{s.num}</div>
                 <div className="text-secondary-400 text-sm">{s.label}</div>
