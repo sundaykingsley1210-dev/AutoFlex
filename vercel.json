@@ -27,9 +27,8 @@
       "dest": "/frontend/build/$1"
     },
     {
-      "src": "/(.*)",
+      "src": "/((?!api/).*)",
       "dest": "/frontend/build/index.html"
     }
-  ],
-  "outputDirectory": "frontend/build"
+  ]
 }
