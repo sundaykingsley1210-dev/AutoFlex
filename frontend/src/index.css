@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body { @apply bg-secondary-900 text-white font-sans antialiased; }
+}
+
+@layer components {
+  .btn-primary { @apply bg-primary-600 hover:bg-primary-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl; }
+  .btn-secondary { @apply bg-secondary-700 hover:bg-secondary-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 border border-secondary-600; }
+  .btn-accent { @apply bg-accent-600 hover:bg-accent-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300; }
+  .card { @apply bg-secondary-800 rounded-xl border border-secondary-700 shadow-xl overflow-hidden; }
+  .card-hover { @apply card hover:border-primary-500/50 hover:shadow-primary-500/10 transition-all duration-300; }
+  .input { @apply w-full bg-secondary-700 border border-secondary-600 rounded-lg px-4 py-3 text-white placeholder-secondary-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all; }
+  .label { @apply block text-sm font-medium text-secondary-300 mb-2; }
+  .badge { @apply px-3 py-1 rounded-full text-xs font-semibold; }
+  .badge-success { @apply badge bg-green-500/20 text-green-400; }
+  .badge-warning { @apply badge bg-yellow-500/20 text-yellow-400; }
+  .badge-danger { @apply badge bg-red-500/20 text-red-400; }
+  .badge-info { @apply badge bg-blue-500/20 text-blue-400; }
+  .glass { @apply bg-white/5 backdrop-blur-lg border border-white/10; }
+  .gradient-text { @apply bg-gradient-to-r from-primary-400 to-accent-400 bg-clip-text text-transparent; }
+}
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { @apply bg-secondary-900; }
+::-webkit-scrollbar-thumb { @apply bg-secondary-600 rounded-full; }
+::-webkit-scrollbar-thumb:hover { @apply bg-secondary-500; }
+
+.animate-fade-in { animation: fadeIn 0.5s ease-in-out; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+.animate-slide-up { animation: slideUp 0.6s ease-out; }
+@keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }

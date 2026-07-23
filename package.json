@@ -1,0 +1,14 @@
+{
+  "name": "autoflex",
+  "version": "1.0.0",
+  "description": "AutoFlex - Drive Your Dream Car. Pay Your Way. Automotive financing platform.",
+  "scripts": {
+    "frontend": "cd frontend && npm start",
+    "backend": "cd backend && npm run dev",
+    "frontend:build": "cd frontend && npm run build",
+    "seed": "cd backend && node seed.js"
+  },
+  "keywords": ["automotive", "financing", "installment", "car", "vehicle"],
+  "author": "AutoFlex",
+  "license": "MIT"
+}
