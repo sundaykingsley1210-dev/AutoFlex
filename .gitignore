@@ -12,3 +12,6 @@ Thumbs.db
 uploads/
 backend/uploads/
 frontend/.env
+
+.vercel
+.env*
