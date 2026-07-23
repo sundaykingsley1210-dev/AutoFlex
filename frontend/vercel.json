@@ -3,8 +3,5 @@
   "installCommand": "npm install",
   "buildCommand": "npm run build",
   "outputDirectory": "build",
-  "framework": "create-react-app",
-  "rewrites": [
-    { "source": "/((?!static/).*)", "destination": "/index.html" }
-  ]
+  "framework": "create-react-app"
 }
