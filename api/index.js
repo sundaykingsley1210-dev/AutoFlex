@@ -26,6 +26,7 @@ const paymentRoutes = require('../backend/routes/payments');
 const dashboardRoutes = require('../backend/routes/dashboard');
 const scheduleRoutes = require('../backend/routes/schedules');
 const adminRoutes = require('../backend/routes/admin');
+const stripeRoutes = require('../backend/routes/stripe');
 
 app.use(helmet({ contentSecurityPolicy: false }));
 app.use(cors());
@@ -46,6 +47,7 @@ app.use('/api/payments', paymentRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/schedules', scheduleRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/stripe', stripeRoutes);
 
 app.get('/api', (req, res) => {
   res.json({ message: 'AutoFlex API is running', version: '1.0.0' });

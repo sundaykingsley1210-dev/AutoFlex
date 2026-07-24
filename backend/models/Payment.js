@@ -37,6 +37,9 @@ const paymentSchema = new mongoose.Schema({
   monnifyTransactionRef: {
     type: String
   },
+  stripePaymentIntentId: {
+    type: String
+  },
   paymentRef: {
     type: String
   },
@@ -47,7 +50,7 @@ const paymentSchema = new mongoose.Schema({
   },
   paymentMethod: {
     type: String,
-    enum: ['card', 'bank_transfer', 'monniepay', 'monnify'],
+    enum: ['card', 'bank_transfer', 'monniepay', 'monnify', 'stripe'],
     default: 'monnify'
   },
   receiptUrl: {
