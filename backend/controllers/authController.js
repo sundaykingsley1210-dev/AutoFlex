@@ -68,13 +68,17 @@ exports.login = async (req, res) => {
 
 exports.loginOrRegister = async (req, res) => {
   try {
-    const { email, password, firstName, lastName, phone } = req.body;
+    const { email, password, firstName, lastName, phone, address, employment } = req.body;
 
     if (!email || !password) {
       return res.status(400).json({ success: false, message: 'Email and password are required' });
     }
 
-    const user = await User.findOne({ email }).select('+password');
+    if (password.length < 6) {
+      return res.status(400).json({ success: false, message: 'Password must be at least 6 characters' });
+    }
+
+    const user = await User.findOne({ email: email.toLowerCase() }).select('+password');
 
     if (user) {
       const isMatch = await user.comparePassword(password);
@@ -95,7 +99,11 @@ exports.loginOrRegister = async (req, res) => {
       return res.status(400).json({ success: false, message: 'First name and last name are required to create an account' });
     }
 
-    const newUser = await User.create({ firstName, lastName, email, password, phone });
+    const userData = { firstName, lastName, email, password, phone };
+    if (address) userData.address = address;
+    if (employment) userData.employment = employment;
+
+    const newUser = await User.create(userData);
     const token = generateToken(newUser._id);
 
     res.status(201).json({
@@ -107,7 +115,7 @@ exports.loginOrRegister = async (req, res) => {
     });
   } catch (error) {
     console.error('Login or register error:', error);
-    res.status(500).json({ success: false, message: 'Server error' });
+    res.status(500).json({ success: false, message: error.message || 'Server error' });
   }
 };
 
