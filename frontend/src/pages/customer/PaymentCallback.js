@@ -54,7 +54,7 @@ const PaymentCallback = () => {
     verify();
   }, [searchParams]);
 
-  const formatPrice = (p) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'NGN', minimumFractionDigits: 0 }).format(p);
+  const formatPrice = (p) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }).format(p);
 
   return (
     <div className="min-h-screen flex items-center justify-center py-12 px-4 animate-fade-in">

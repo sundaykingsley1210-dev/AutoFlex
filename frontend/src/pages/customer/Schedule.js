@@ -15,7 +15,7 @@ const Schedule = () => {
     api.get(`/schedules/${applicationId}`).then(res => setSchedule(res.data.schedule || res.data)).catch(() => {}).finally(() => setLoading(false));
   }, [applicationId]);
 
-  const formatPrice = (p) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'NGN', minimumFractionDigits: 0 }).format(p);
+  const formatPrice = (p) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }).format(p);
   const statusIcon = (s) => { switch(s) { case 'paid': return <FaCheckCircle className="text-green-400" />; case 'overdue': return <FaExclamationTriangle className="text-red-400" />; case 'due': return <FaCreditCard className="text-yellow-400" />; default: return <FaClock className="text-secondary-400" />; } };
   const statusColor = (s) => { switch(s) { case 'paid': return 'badge-success'; case 'overdue': return 'badge-danger'; case 'due': return 'badge-warning'; default: return 'badge-info'; } };
 
@@ -33,7 +33,7 @@ const Schedule = () => {
       if (window.MonnifySDK) {
         window.MonnifySDK.initialize({
           amount: paymentEntry.amountDue - (paymentEntry.amountPaid || 0),
-          currency: 'NGN',
+          currency: 'USD',
           reference: res.data.data.payment.paymentRef || res.data.data.payment.transactionRef,
           customerFullName: `${JSON.parse(localStorage.getItem('user'))?.firstName || 'Customer'} ${JSON.parse(localStorage.getItem('user'))?.lastName || ''}`,
           customerEmail: JSON.parse(localStorage.getItem('user'))?.email || 'customer@autoflex.com',

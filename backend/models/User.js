@@ -42,7 +42,7 @@ const userSchema = new mongoose.Schema({
     city: { type: String, trim: true },
     state: { type: String, trim: true },
     zipCode: { type: String, trim: true },
-    country: { type: String, trim: true, default: 'Nigeria' }
+    country: { type: String, trim: true, default: 'United States' }
   },
   identification: {
     type: { type: String, enum: ['nin', 'drivers_license', 'passport', 'voters_card'] },
@@ -61,6 +61,14 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: ''
   },
+  virtualAccount: {
+    bankName: { type: String },
+    accountNumber: { type: String },
+    accountName: { type: String },
+    bankCode: { type: String },
+    currency: { type: String, default: 'USD' }
+  },
+  country: { type: String, trim: true, default: 'United States' },
   resetPasswordToken: String,
   resetPasswordExpire: Date
 }, {

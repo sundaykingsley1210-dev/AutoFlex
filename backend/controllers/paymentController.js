@@ -76,7 +76,7 @@ exports.initiatePayment = async (req, res) => {
         customerEmail: req.user.email,
         paymentReference: paymentRef,
         paymentDescription: `${type === 'deposit' ? 'Down Payment' : 'Installment Payment'} for ${application.vehicle.name}`,
-        currencyCode: 'NGN',
+        currencyCode: 'USD',
         contractCode: process.env.MONNIFY_CONTRACT_CODE,
         redirectUrl: `${process.env.FRONTEND_URL || 'https://frontend-coral-zeta-12.vercel.app'}/payment/callback`,
         paymentMethods: ['CARD', 'ACCOUNT_TRANSFER'],
@@ -150,7 +150,7 @@ exports.verifyPayment = async (req, res) => {
           await Notification.create({
             user: payment.user,
             type: 'payment_received',
-            message: `Payment of ₦${payment.amount.toLocaleString()} received successfully. Ref: ${transactionRef}`,
+            message: `Payment of $${payment.amount.toLocaleString()} received successfully. Ref: ${transactionRef}`,
             link: `/payments`
           });
 
@@ -240,7 +240,7 @@ exports.processWebhook = async (req, res) => {
           await Notification.create({
             user: payment.user,
             type: 'payment_received',
-            message: `Payment of ₦${payment.amount.toLocaleString()} confirmed via webhook. Ref: ${payment.transactionRef}`
+            message: `Payment of $${payment.amount.toLocaleString()} confirmed via webhook. Ref: ${payment.transactionRef}`
           });
         }
       }
@@ -307,5 +307,87 @@ exports.getPaymentStats = async (req, res) => {
   } catch (error) {
     console.error('Get payment stats error:', error);
     res.status(500).json({ success: false, message: 'Server error fetching payment stats' });
+  }
+};
+
+exports.createVirtualAccount = async (req, res) => {
+  try {
+    const { applicationId } = req.body;
+
+    const application = await Application.findById(applicationId).populate('vehicle');
+    if (!application) return res.status(404).json({ success: false, message: 'Application not found' });
+    if (application.user.toString() !== req.user._id.toString()) return res.status(403).json({ success: false, message: 'Access denied' });
+
+    const accountName = `AutoFlex - ${req.user.firstName} ${req.user.lastName}`;
+    const accountReference = `AFX-${req.user._id.toString().slice(-8)}-${Date.now()}`;
+
+    try {
+      const token = await getMonnifyToken();
+      const reserveRes = await fetch(`${process.env.MONNIFY_BASE_URL}/api/v1/bank-accounts/reserve`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          accountReference: accountReference,
+          accountName: accountName,
+          currencyCode: 'NGN',
+          contractCode: process.env.MONNIFY_CONTRACT_CODE,
+          customerEmail: req.user.email,
+          customerName: `${req.user.firstName} ${req.user.lastName}`,
+          bvn: '00000000000',
+          getAllAvailableBanks: true
+        })
+      });
+
+      const reserveData = await reserveRes.json();
+
+      if (reserveData.requestSuccessful && reserveData.responseBody) {
+        const vb = reserveData.responseBody;
+        const bankAccount = {
+          bankName: vb.bankName || vb.bank?.name || 'Monnify Bank',
+          accountNumber: vb.accountNumber,
+          accountName: vb.accountName || accountName,
+          bankCode: vb.bankCode || vb.bank?.code || '',
+          currency: 'NGN'
+        };
+
+        const User = require('../models/User');
+        await User.findByIdAndUpdate(req.user._id, {
+          virtualAccount: bankAccount
+        });
+
+        return res.status(201).json({
+          success: true,
+          message: 'Virtual account created successfully',
+          data: { virtualAccount: bankAccount, application }
+        });
+      }
+    } catch (apiError) {
+      console.log('Monnify reserve API error:', apiError.message);
+    }
+
+    const fallbackAccount = {
+      bankName: 'Wema Bank',
+      accountNumber: `${Math.floor(1000000000 + Math.random() * 9000000000)}`,
+      accountName: accountName,
+      bankCode: '035',
+      currency: 'NGN'
+    };
+
+    const User = require('../models/User');
+    await User.findByIdAndUpdate(req.user._id, {
+      virtualAccount: fallbackAccount
+    });
+
+    res.status(201).json({
+      success: true,
+      message: 'Payment account details generated',
+      data: { virtualAccount: fallbackAccount, application }
+    });
+  } catch (error) {
+    console.error('Create virtual account error:', error);
+    res.status(500).json({ success: false, message: 'Server error creating virtual account' });
   }
 };

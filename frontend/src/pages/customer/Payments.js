@@ -25,7 +25,7 @@ const Payments = () => {
     }).catch(() => {});
   }, []);
 
-  const formatPrice = (p) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'NGN', minimumFractionDigits: 0 }).format(p);
+  const formatPrice = (p) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }).format(p);
   const filtered = filter === 'all' ? payments : payments.filter(p => p.status === filter);
   const totalPaid = payments.filter(p => p.status === 'successful').reduce((a, p) => a + p.amount, 0);
 

@@ -182,3 +182,30 @@ exports.updateApplicationStatus = async (req, res) => {
     res.status(500).json({ success: false, message: 'Server error updating application status' });
   }
 };
+
+exports.uploadDocuments = async (req, res) => {
+  try {
+    const application = await Application.findById(req.params.id);
+
+    if (!application) {
+      return res.status(404).json({ success: false, message: 'Application not found' });
+    }
+
+    if (application.user.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ success: false, message: 'Access denied' });
+    }
+
+    const uploadedFiles = (req.files || []).map(file => ({
+      name: file.originalname,
+      url: `/uploads/documents/${file.filename}`
+    }));
+
+    application.documents = [...(application.documents || []), ...uploadedFiles];
+    await application.save();
+
+    res.status(200).json({ success: true, message: 'Documents uploaded successfully', data: { documents: application.documents } });
+  } catch (error) {
+    console.error('Upload documents error:', error);
+    res.status(500).json({ success: false, message: 'Server error uploading documents' });
+  }
+};

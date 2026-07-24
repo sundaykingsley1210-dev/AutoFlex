@@ -61,7 +61,8 @@ exports.getCustomerDashboard = async (req, res) => {
       nextPayment,
       paymentProgress,
       recentPayments: payments,
-      featuredVehicles
+      featuredVehicles,
+      virtualAccount: req.user.virtualAccount || null
     });
   } catch (error) {
     console.error('Get customer dashboard error:', error);

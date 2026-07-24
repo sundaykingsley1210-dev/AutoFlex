@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { FaMoneyBillWave, FaCalendarAlt, FaArrowRight, FaClock, FaCheckCircle, FaReceipt, FaCreditCard, FaCar } from 'react-icons/fa';
+import { FaMoneyBillWave, FaCalendarAlt, FaArrowRight, FaClock, FaCheckCircle, FaReceipt, FaCreditCard, FaCar, FaUniversity, FaCopy } from 'react-icons/fa';
+import { toast } from 'react-toastify';
 import { useAuth } from '../../hooks/useAuth';
 import api from '../../utils/api';
 import Loading from '../../components/common/Loading';
@@ -12,6 +13,8 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [showPayment, setShowPayment] = useState(false);
   const [applicationId, setApplicationId] = useState(null);
+  const [showVirtualAccount, setShowVirtualAccount] = useState(false);
+  const [generatingAccount, setGeneratingAccount] = useState(false);
 
   const fetchDashboard = () => api.get('/dashboard').then(res => setData(res.data)).catch(() => {});
 
@@ -27,7 +30,19 @@ const Dashboard = () => {
     }).catch(() => {});
   }, []);
 
-  const formatPrice = (p) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'NGN', minimumFractionDigits: 0 }).format(p || 0);
+  const formatPrice = (p) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }).format(p || 0);
+
+  const generateVirtualAccount = async () => {
+    if (!applicationId) { toast.error('Please submit an application first'); return; }
+    setGeneratingAccount(true);
+    try {
+      const res = await api.post('/payments/virtual-account', { applicationId });
+      setData(d => ({ ...d, virtualAccount: res.data.data.virtualAccount }));
+      setShowVirtualAccount(true);
+      toast.success('Bank account details generated!');
+    } catch (err) { toast.error(err.response?.data?.message || 'Failed to generate account'); } finally { setGeneratingAccount(false); }
+  };
+
   if (loading) return <div className="py-8 flex items-center justify-center"><Loading /></div>;
 
   const stats = [
@@ -106,6 +121,36 @@ const Dashboard = () => {
             <Link to="/vehicles" className="btn-primary inline-flex items-center gap-2">Browse Vehicles <FaArrowRight /></Link>
           </div>
         )}
+
+        {data?.virtualAccount ? (
+          <div className="card p-6 mb-8">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="font-semibold flex items-center gap-2"><FaUniversity className="text-primary-400" /> Bank Transfer Details</h2>
+              <button onClick={() => setShowVirtualAccount(!showVirtualAccount)} className="text-primary-400 text-sm hover:underline">{showVirtualAccount ? 'Hide' : 'Show'} Details</button>
+            </div>
+            {showVirtualAccount && (
+              <div className="bg-secondary-700/50 rounded-xl p-4 space-y-3">
+                <div className="flex justify-between items-center"><span className="text-secondary-400 text-sm">Bank</span><span className="font-semibold">{data.virtualAccount.bankName}</span></div>
+                <div className="flex justify-between items-center"><span className="text-secondary-400 text-sm">Account Number</span><div className="flex items-center gap-2"><span className="font-mono font-bold text-lg">{data.virtualAccount.accountNumber}</span><button onClick={() => { navigator.clipboard.writeText(data.virtualAccount.accountNumber); toast.success('Copied!'); }} className="text-primary-400 hover:text-primary-300"><FaCopy /></button></div></div>
+                <div className="flex justify-between items-center"><span className="text-secondary-400 text-sm">Account Name</span><span className="font-semibold">{data.virtualAccount.accountName}</span></div>
+                <p className="text-xs text-secondary-500 mt-2">Transfer your payment to this account. Your payment will be verified automatically within a few minutes.</p>
+              </div>
+            )}
+          </div>
+        ) : applicationId ? (
+          <div className="card p-6 mb-8">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-primary-600/20 flex items-center justify-center text-primary-400"><FaUniversity /></div>
+              <div className="flex-1">
+                <h3 className="font-semibold">Get Your Payment Account</h3>
+                <p className="text-sm text-secondary-400">Generate a unique bank account for your payments</p>
+              </div>
+              <button onClick={generateVirtualAccount} disabled={generatingAccount} className="btn-primary flex items-center gap-2 disabled:opacity-50">
+                {generatingAccount ? 'Generating...' : 'Generate Account'}
+              </button>
+            </div>
+          </div>
+        ) : null}
 
         <div className="card p-6">
           <div className="flex items-center justify-between mb-4">

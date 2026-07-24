@@ -24,7 +24,7 @@ const PaymentModal = ({ isOpen, onClose, applicationId, amount, type = 'installm
       if (window.MonnifySDK) {
         window.MonnifySDK.initialize({
           amount: amount,
-          currency: 'NGN',
+          currency: 'USD',
           reference: payment.paymentRef || payment.transactionRef,
           customerFullName: `${user.firstName || 'Customer'} ${user.lastName || ''}`,
           customerEmail: user.email || 'customer@autoflex.com',
@@ -70,7 +70,7 @@ const PaymentModal = ({ isOpen, onClose, applicationId, amount, type = 'installm
     }
   };
 
-  const formatPrice = (p) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'NGN', minimumFractionDigits: 0 }).format(p);
+  const formatPrice = (p) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }).format(p);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-fade-in">

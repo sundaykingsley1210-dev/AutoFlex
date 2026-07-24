@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { FaCar, FaUpload, FaCheck, FaArrowLeft } from 'react-icons/fa';
+import { FaCar, FaUpload, FaCheck, FaArrowLeft, FaTimes, FaImage, FaFileAlt } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import api from '../../utils/api';
 import { useAuth } from '../../hooks/useAuth';
@@ -10,14 +10,17 @@ const ApplyVehicle = () => {
   const { vehicleId } = useParams();
   const { user } = useAuth();
   const navigate = useNavigate();
+  const fileInputRef = useRef(null);
   const [vehicle, setVehicle] = useState(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [applicationId, setApplicationId] = useState(null);
   const [form, setForm] = useState({
     installmentMonths: 12, depositAmount: '',
     employer: '', position: '', monthlyIncome: '',
     idType: 'national_id', idNumber: '',
-    documents: []
   });
 
   useEffect(() => {
@@ -27,11 +30,39 @@ const ApplyVehicle = () => {
   const update = (field, value) => setForm(f => ({ ...f, [field]: value }));
   const formatPrice = (p) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }).format(p);
 
+  const handleFileSelect = (e) => {
+    const files = Array.from(e.target.files || []);
+    const validFiles = files.filter(f => {
+      if (f.size > 10 * 1024 * 1024) { toast.error(`${f.name} is too large (max 10MB)`); return false; }
+      return true;
+    });
+    setUploadedFiles(prev => [...prev, ...validFiles.map(f => ({ file: f, preview: URL.createObjectURL(f), name: f.name }))]);
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+  const removeFile = (index) => {
+    setUploadedFiles(prev => { const updated = [...prev]; URL.revokeObjectURL(updated[index].preview); updated.splice(index, 1); return updated; });
+  };
+
+  const handleFileUpload = async (appId) => {
+    if (uploadedFiles.length === 0) return;
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      uploadedFiles.forEach(f => formData.append('documents', f.file));
+      await api.post(`/applications/${appId}/documents`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+      toast.success('Documents uploaded successfully!');
+    } catch (err) { toast.error('Failed to upload documents'); } finally { setUploading(false); }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
     try {
-      await api.post('/applications', { vehicleId, ...form });
+      const res = await api.post('/applications', { vehicleId, ...form });
+      const appId = res.data.data?._id || res.data.application?._id;
+      setApplicationId(appId);
+      if (uploadedFiles.length > 0 && appId) await handleFileUpload(appId);
       toast.success('Application submitted successfully!');
       navigate('/dashboard/applications');
     } catch (err) { toast.error(err.response?.data?.message || 'Submission failed'); } finally { setSubmitting(false); }
@@ -50,7 +81,6 @@ const ApplyVehicle = () => {
         <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-secondary-400 hover:text-white mb-6"><FaArrowLeft /> Back</button>
         <h1 className="text-2xl font-bold mb-6">Financing Application</h1>
 
-        {/* Vehicle Summary */}
         <div className="card p-6 mb-6">
           <div className="flex items-center gap-4">
             <img src={vehicle.images?.[0] || 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=200'} alt="" className="w-20 h-20 rounded-lg object-cover" />
@@ -59,7 +89,6 @@ const ApplyVehicle = () => {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Payment Plan */}
           <div className="card p-6">
             <h2 className="text-lg font-semibold mb-4">Payment Plan</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -77,7 +106,6 @@ const ApplyVehicle = () => {
             </div>
           </div>
 
-          {/* Personal Info */}
           <div className="card p-6">
             <h2 className="text-lg font-semibold mb-4">Personal Information</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -91,31 +119,49 @@ const ApplyVehicle = () => {
             </div>
           </div>
 
-          {/* Employment */}
           <div className="card p-6">
             <h2 className="text-lg font-semibold mb-4">Employment Details</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div><label className="label">Employer</label><input className="input" placeholder="Company name" value={form.employer} onChange={e => update('employer', e.target.value)} required /></div>
               <div><label className="label">Position</label><input className="input" placeholder="Job title" value={form.position} onChange={e => update('position', e.target.value)} required /></div>
-              <div><label className="label">Monthly Income ($)</label><input type="number" className="input" placeholder="500000" value={form.monthlyIncome} onChange={e => update('monthlyIncome', e.target.value)} required /></div>
+              <div><label className="label">Monthly Income ($)</label><input type="number" className="input" placeholder="5000" value={form.monthlyIncome} onChange={e => update('monthlyIncome', e.target.value)} required /></div>
             </div>
           </div>
 
-          {/* Documents */}
           <div className="card p-6">
             <h2 className="text-lg font-semibold mb-4">Upload Documents</h2>
             <p className="text-secondary-400 text-sm mb-4">Upload proof of identity, proof of address, and income verification</p>
-            <div className="border-2 border-dashed border-secondary-600 rounded-lg p-8 text-center hover:border-primary-500 transition cursor-pointer">
+
+            <input ref={fileInputRef} type="file" multiple accept="image/*,.pdf,.doc,.docx" onChange={handleFileSelect} className="hidden" id="file-upload" />
+
+            <div onClick={() => fileInputRef.current?.click()} className="border-2 border-dashed border-secondary-600 rounded-lg p-8 text-center hover:border-primary-500 transition cursor-pointer active:bg-secondary-700/50">
               <FaUpload className="text-3xl text-secondary-400 mx-auto mb-3" />
-              <p className="text-secondary-400 text-sm">Click to upload or drag and drop</p>
-              <p className="text-secondary-500 text-xs mt-1">PDF, JPG, PNG up to 5MB each</p>
+              <p className="text-secondary-300 text-sm font-medium">Tap to upload from your device</p>
+              <p className="text-secondary-500 text-xs mt-1">Take a photo, choose from gallery, or select files from computer</p>
+              <p className="text-secondary-600 text-xs mt-2">JPG, PNG, PDF up to 10MB each</p>
             </div>
+
+            {uploadedFiles.length > 0 && (
+              <div className="mt-4 space-y-2">
+                {uploadedFiles.map((f, i) => (
+                  <div key={i} className="flex items-center gap-3 bg-secondary-700/50 rounded-lg p-3">
+                    {f.file.type.startsWith('image/') ? (
+                      <img src={f.preview} alt="" className="w-10 h-10 rounded object-cover" />
+                    ) : (
+                      <div className="w-10 h-10 rounded bg-secondary-600 flex items-center justify-center"><FaFileAlt className="text-secondary-300" /></div>
+                    )}
+                    <div className="flex-1 min-w-0"><p className="text-sm truncate">{f.name}</p><p className="text-xs text-secondary-400">{(f.file.size / 1024).toFixed(0)} KB</p></div>
+                    <button type="button" onClick={() => removeFile(i)} className="text-red-400 hover:text-red-300 p-1"><FaTimes /></button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="flex gap-3">
             <button type="button" onClick={() => navigate(-1)} className="btn-secondary flex-1">Cancel</button>
-            <button type="submit" disabled={submitting} className="btn-primary flex-1 flex items-center justify-center gap-2 disabled:opacity-50">
-              <FaCheck /> {submitting ? 'Submitting...' : 'Submit Application'}
+            <button type="submit" disabled={submitting || uploading} className="btn-primary flex-1 flex items-center justify-center gap-2 disabled:opacity-50">
+              <FaCheck /> {uploading ? 'Uploading...' : submitting ? 'Submitting...' : 'Submit Application'}
             </button>
           </div>
         </form>
