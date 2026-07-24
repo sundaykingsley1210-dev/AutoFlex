@@ -36,7 +36,7 @@ const Profile = () => {
   };
 
   return (
-    <div className="min-h-screen py-8 animate-fade-in">
+    <div className="py-8 animate-fade-in">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <h1 className="text-2xl font-bold mb-6">My Profile</h1>
         <div className="card p-6 mb-6">

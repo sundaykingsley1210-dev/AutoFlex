@@ -78,15 +78,15 @@ const Schedule = () => {
     }
   };
 
-  if (loading) return <div className="min-h-screen flex items-center justify-center"><Loading /></div>;
-  if (!schedule) return <div className="min-h-screen flex items-center justify-center"><p className="text-secondary-400">Schedule not found</p></div>;
+  if (loading) return <div className="py-8 flex items-center justify-center"><Loading /></div>;
+  if (!schedule) return <div className="py-8 flex items-center justify-center"><p className="text-secondary-400">Schedule not found</p></div>;
 
   const paidCount = schedule.payments?.filter(p => p.status === 'paid').length || 0;
   const totalCount = schedule.payments?.length || 1;
   const progress = Math.round((paidCount / totalCount) * 100);
 
   return (
-    <div className="min-h-screen py-8 animate-fade-in">
+    <div className="py-8 animate-fade-in">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <Link to="/dashboard" className="flex items-center gap-2 text-secondary-400 hover:text-white mb-6"><FaArrowLeft /> Back to Dashboard</Link>
         <h1 className="text-2xl font-bold mb-6">Payment Schedule</h1>

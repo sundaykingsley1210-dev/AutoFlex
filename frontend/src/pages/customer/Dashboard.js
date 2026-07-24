@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { FaMoneyBillWave, FaCalendarAlt, FaArrowRight, FaClock, FaCheckCircle, FaReceipt, FaCreditCard } from 'react-icons/fa';
+import { FaMoneyBillWave, FaCalendarAlt, FaArrowRight, FaClock, FaCheckCircle, FaReceipt, FaCreditCard, FaCar } from 'react-icons/fa';
 import { useAuth } from '../../hooks/useAuth';
 import api from '../../utils/api';
 import Loading from '../../components/common/Loading';
@@ -20,19 +20,15 @@ const Dashboard = () => {
   }, []);
 
   useEffect(() => {
-    if (data?.vehicle) {
-      api.get('/dashboard').then(res => {
-        api.get('/applications').then(appRes => {
-          const apps = appRes.data.applications || [];
-          const active = apps.find(a => a.status === 'active' || a.status === 'approved');
-          if (active) setApplicationId(active._id);
-        }).catch(() => {});
-      }).catch(() => {});
-    }
-  }, [data]);
+    api.get('/applications/my').then(appRes => {
+      const apps = appRes.data.applications || [];
+      const active = apps.find(a => a.status === 'active' || a.status === 'approved');
+      if (active) setApplicationId(active._id);
+    }).catch(() => {});
+  }, []);
 
   const formatPrice = (p) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'NGN', minimumFractionDigits: 0 }).format(p || 0);
-  if (loading) return <div className="min-h-screen flex items-center justify-center"><Loading /></div>;
+  if (loading) return <div className="py-8 flex items-center justify-center"><Loading /></div>;
 
   const stats = [
     { icon: <FaMoneyBillWave />, label: 'Total Price', value: formatPrice(data?.vehicle?.price), color: 'text-primary-400', bg: 'bg-primary-600/20' },

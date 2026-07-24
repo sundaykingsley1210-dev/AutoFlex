@@ -18,7 +18,7 @@ const Payments = () => {
     api.get('/dashboard').then(res => {
       if (res.data.nextPayment) setNextPayment(res.data.nextPayment);
     }).catch(() => {});
-    api.get('/applications').then(res => {
+    api.get('/applications/my').then(res => {
       const apps = res.data.applications || [];
       const active = apps.find(a => a.status === 'active' || a.status === 'approved');
       if (active) setApplicationId(active._id);
@@ -29,10 +29,10 @@ const Payments = () => {
   const filtered = filter === 'all' ? payments : payments.filter(p => p.status === filter);
   const totalPaid = payments.filter(p => p.status === 'successful').reduce((a, p) => a + p.amount, 0);
 
-  if (loading) return <div className="min-h-screen flex items-center justify-center"><Loading /></div>;
+  if (loading) return <div className="py-8 flex items-center justify-center"><Loading /></div>;
 
   return (
-    <div className="min-h-screen py-8 animate-fade-in">
+    <div className="py-8 animate-fade-in">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl font-bold">Payment History</h1>

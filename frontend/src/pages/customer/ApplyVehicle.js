@@ -37,7 +37,7 @@ const ApplyVehicle = () => {
     } catch (err) { toast.error(err.response?.data?.message || 'Submission failed'); } finally { setSubmitting(false); }
   };
 
-  if (loading) return <div className="min-h-screen flex items-center justify-center"><Loading /></div>;
+  if (loading) return <div className="py-8 flex items-center justify-center"><Loading /></div>;
   if (!vehicle) return null;
 
   const deposit = Number(form.depositAmount);
@@ -45,7 +45,7 @@ const ApplyVehicle = () => {
   const monthly = Math.ceil(balance / form.installmentMonths);
 
   return (
-    <div className="min-h-screen py-8 animate-fade-in">
+    <div className="py-8 animate-fade-in">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-secondary-400 hover:text-white mb-6"><FaArrowLeft /> Back</button>
         <h1 className="text-2xl font-bold mb-6">Financing Application</h1>
