@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { FaCar, FaUpload, FaCheck, FaArrowLeft, FaTimes, FaImage, FaFileAlt } from 'react-icons/fa';
+import { FaCar, FaUpload, FaCheck, FaArrowLeft, FaArrowRight, FaTimes, FaImage, FaFileAlt, FaUniversity, FaCopy, FaCheckCircle } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import api from '../../utils/api';
 import { useAuth } from '../../hooks/useAuth';
@@ -17,6 +17,8 @@ const ApplyVehicle = () => {
   const [uploading, setUploading] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [applicationId, setApplicationId] = useState(null);
+  const [virtualAccount, setVirtualAccount] = useState(null);
+  const [submitted, setSubmitted] = useState(false);
   const [form, setForm] = useState({
     installmentMonths: 12, depositAmount: '',
     employer: '', position: '', monthlyIncome: '',
@@ -60,11 +62,13 @@ const ApplyVehicle = () => {
     setSubmitting(true);
     try {
       const res = await api.post('/applications', { vehicleId, ...form });
-      const appId = res.data.data?._id || res.data.application?._id;
+      const data = res.data.data || res.data;
+      const appId = data.application?._id || data._id;
+      const va = data.virtualAccount || null;
       setApplicationId(appId);
+      setVirtualAccount(va);
       if (uploadedFiles.length > 0 && appId) await handleFileUpload(appId);
-      toast.success('Application submitted successfully!');
-      navigate('/dashboard/applications');
+      setSubmitted(true);
     } catch (err) { toast.error(err.response?.data?.message || 'Submission failed'); } finally { setSubmitting(false); }
   };
 
@@ -168,5 +172,63 @@ const ApplyVehicle = () => {
       </div>
     </div>
   );
+
+  if (submitted) {
+    return (
+      <div className="py-8 animate-fade-in">
+        <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="card p-8 text-center">
+            <FaCheckCircle className="text-6xl text-green-400 mx-auto mb-4" />
+            <h1 className="text-2xl font-bold mb-2">Application Submitted!</h1>
+            <p className="text-secondary-400 mb-6">Your financing application has been received. Here are your payment details:</p>
+
+            {vehicle && (
+              <div className="bg-secondary-700/50 rounded-xl p-4 mb-6 flex items-center gap-4">
+                <img src={vehicle.images?.[0] || 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=200'} alt="" className="w-16 h-16 rounded-lg object-cover" />
+                <div className="text-left"><p className="font-semibold">{vehicle.name}</p><p className="text-sm text-secondary-400">{vehicle.year} • {vehicle.brand}</p></div>
+              </div>
+            )}
+
+            {virtualAccount && (
+              <div className="bg-gradient-to-r from-primary-600/20 to-accent-600/20 border border-primary-500/30 rounded-xl p-6 mb-6 text-left">
+                <div className="flex items-center gap-3 mb-4">
+                  <FaUniversity className="text-primary-400 text-xl" />
+                  <h2 className="font-semibold text-lg">Your Payment Account</h2>
+                </div>
+                <p className="text-secondary-400 text-sm mb-4">Transfer your deposit to this account to complete your application:</p>
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center bg-secondary-800/50 rounded-lg p-3">
+                    <span className="text-secondary-400 text-sm">Bank</span>
+                    <span className="font-semibold">{virtualAccount.bankName}</span>
+                  </div>
+                  <div className="flex justify-between items-center bg-secondary-800/50 rounded-lg p-3">
+                    <span className="text-secondary-400 text-sm">Account Number</span>
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono font-bold text-lg text-primary-400">{virtualAccount.accountNumber}</span>
+                      <button onClick={() => { navigator.clipboard.writeText(virtualAccount.accountNumber); toast.success('Account number copied!'); }} className="text-primary-400 hover:text-primary-300 p-1"><FaCopy /></button>
+                    </div>
+                  </div>
+                  <div className="flex justify-between items-center bg-secondary-800/50 rounded-lg p-3">
+                    <span className="text-secondary-400 text-sm">Account Name</span>
+                    <span className="font-semibold text-sm">{virtualAccount.accountName}</span>
+                  </div>
+                </div>
+                <p className="text-xs text-secondary-500 mt-4 text-center">Your payment will be verified automatically</p>
+              </div>
+            )}
+
+            <div className="flex flex-col gap-3">
+              <button onClick={() => navigate('/dashboard')} className="btn-primary flex items-center justify-center gap-2">Go to Dashboard <FaArrowRight /></button>
+              <button onClick={() => navigate('/dashboard/applications')} className="btn-secondary">View My Applications</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="py-8 animate-fade-in">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 };
 export default ApplyVehicle;

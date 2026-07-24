@@ -3,6 +3,8 @@ const Vehicle = require('../models/Vehicle');
 const PaymentSchedule = require('../models/PaymentSchedule');
 const Notification = require('../models/Notification');
 const { generatePaymentSchedule } = require('../utils/helpers');
+const { generateVirtualAccountForUser } = require('./paymentController');
+const User = require('../models/User');
 
 exports.submitApplication = async (req, res) => {
   try {
@@ -30,10 +32,22 @@ exports.submitApplication = async (req, res) => {
 
     await vehicle.save();
 
+    let virtualAccount = null;
+    const user = await User.findById(req.user._id);
+    if (!user.virtualAccount || !user.virtualAccount.accountNumber) {
+      try {
+        virtualAccount = await generateVirtualAccountForUser(user);
+      } catch (vaError) {
+        console.log('Auto virtual account generation failed:', vaError.message);
+      }
+    } else {
+      virtualAccount = user.virtualAccount;
+    }
+
     res.status(201).json({
       success: true,
       message: 'Application submitted successfully',
-      data: application
+      data: { application, virtualAccount }
     });
   } catch (error) {
     console.error('Submit application error:', error);
@@ -139,6 +153,11 @@ exports.reviewApplication = async (req, res) => {
         user: application.user,
         ...scheduleResult
       });
+
+      const appUser = await User.findById(application.user);
+      if (appUser && (!appUser.virtualAccount || !appUser.virtualAccount.accountNumber)) {
+        try { await generateVirtualAccountForUser(appUser); } catch (e) { console.log('Auto VA on approve failed:', e.message); }
+      }
     }
 
     await application.save();
