@@ -20,14 +20,14 @@ const Vehicles = () => {
   const [showFilters, setShowFilters] = useState(false);
   const limit = 9;
 
-  const brands = ['Toyota', 'Honda', 'BMW', 'Mercedes-Benz', 'Ford', 'Hyundai', 'Lexus', 'Nissan'];
-  const bodyTypes = ['Sedan', 'SUV', 'Hatchback', 'Truck', 'Coupe', 'Convertible'];
-  const fuelTypes = ['Petrol', 'Diesel', 'Electric', 'Hybrid'];
-  const transmissions = ['Automatic', 'Manual'];
+  const brands = ['Tesla'];
+  const bodyTypes = ['Sedan', 'SUV', 'Truck'];
+  const fuelTypes = ['Electric'];
+  const transmissions = ['Automatic'];
 
-  const bodyTypeMap = { Sedan: 'sedan', SUV: 'suv', Hatchback: 'hatchback', Truck: 'truck', Coupe: 'coupe', Convertible: 'convertible' };
-  const fuelTypeMap = { Petrol: 'petrol', Diesel: 'diesel', Electric: 'electric', Hybrid: 'hybrid' };
-  const transmissionMap = { Automatic: 'automatic', Manual: 'manual' };
+  const bodyTypeMap = { Sedan: 'sedan', SUV: 'suv', Truck: 'truck' };
+  const fuelTypeMap = { Electric: 'electric' };
+  const transmissionMap = { Automatic: 'automatic' };
 
   const fetchVehicles = async () => {
     setLoading(true);

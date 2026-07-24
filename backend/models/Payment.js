@@ -34,6 +34,12 @@ const paymentSchema = new mongoose.Schema({
   monniePayId: {
     type: String
   },
+  monnifyTransactionRef: {
+    type: String
+  },
+  paymentRef: {
+    type: String
+  },
   status: {
     type: String,
     enum: ['pending', 'successful', 'failed'],
@@ -41,8 +47,8 @@ const paymentSchema = new mongoose.Schema({
   },
   paymentMethod: {
     type: String,
-    enum: ['card', 'bank_transfer', 'monniepay'],
-    default: 'monniepay'
+    enum: ['card', 'bank_transfer', 'monniepay', 'monnify'],
+    default: 'monnify'
   },
   receiptUrl: {
     type: String

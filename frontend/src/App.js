@@ -21,6 +21,7 @@ import ApplyVehicle from './pages/customer/ApplyVehicle';
 import Notifications from './pages/customer/Notifications';
 import Profile from './pages/customer/Profile';
 import Schedule from './pages/customer/Schedule';
+import PaymentCallback from './pages/customer/PaymentCallback';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminVehicles from './pages/admin/AdminVehicles';
 import AdminVehicleForm from './pages/admin/AdminVehicleForm';
@@ -45,6 +46,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/payment/callback" element={<PaymentCallback />} />
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/dashboard/payments" element={<ProtectedRoute><Payments /></ProtectedRoute>} />
             <Route path="/dashboard/applications" element={<ProtectedRoute><Applications /></ProtectedRoute>} />
