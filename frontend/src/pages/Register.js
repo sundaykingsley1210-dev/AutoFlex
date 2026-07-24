@@ -9,7 +9,7 @@ const Register = () => {
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({ firstName: '', lastName: '', email: '', phone: '', password: '', confirmPassword: '', street: '', city: '', state: '', zipCode: '', country: 'United States', employer: '', position: '', monthlyIncome: '' });
-  const { register } = useAuth();
+  const { loginOrRegister } = useAuth();
   const navigate = useNavigate();
   const update = (field, value) => setForm({ ...form, [field]: value });
 
@@ -19,9 +19,23 @@ const Register = () => {
     if (form.password.length < 6) return toast.error('Password must be at least 6 characters');
     setLoading(true);
     try {
-      await register({ ...form, address: { street: form.street, city: form.city, state: form.state, zipCode: form.zipCode, country: form.country }, employment: { employer: form.employer, position: form.position, monthlyIncome: Number(form.monthlyIncome) } });
-      toast.success('Account created successfully!');
-      navigate('/dashboard');
+      const result = await loginOrRegister({
+        email: form.email,
+        password: form.password,
+        firstName: form.firstName,
+        lastName: form.lastName,
+        phone: form.phone,
+        address: { street: form.street, city: form.city, state: form.state, zipCode: form.zipCode, country: form.country },
+        employment: { employer: form.employer, position: form.position, monthlyIncome: Number(form.monthlyIncome) }
+      });
+
+      if (result.action === 'register') {
+        toast.success(result.message || 'Account created successfully! Welcome to AutoFlex.');
+      } else {
+        toast.success(result.message || 'Welcome back! You are already registered.');
+      }
+
+      navigate(result.user.role === 'admin' ? '/admin' : '/dashboard');
     } catch (err) {
       toast.error(err.response?.data?.message || 'Registration failed');
     } finally { setLoading(false); }

@@ -46,6 +46,16 @@ export const AuthProvider = ({ children }) => {
     return u;
   };
 
+  const loginOrRegister = async (data) => {
+    const res = await api.post('/auth/login-or-register', data);
+    const { token: t, user: u, action, message } = res.data;
+    localStorage.setItem('autoflex_token', t);
+    localStorage.setItem('autoflex_user', JSON.stringify(u));
+    setToken(t);
+    setUser(u);
+    return { user: u, action, message };
+  };
+
   const logout = () => {
     localStorage.removeItem('autoflex_token');
     localStorage.removeItem('autoflex_user');
@@ -61,7 +71,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, loading, login, register, logout, updateProfile, isAuthenticated: !!token && !!user, isAdmin: user?.role === 'admin' }}>
+    <AuthContext.Provider value={{ user, token, loading, login, register, loginOrRegister, logout, updateProfile, isAuthenticated: !!token && !!user, isAdmin: user?.role === 'admin' }}>
       {children}
     </AuthContext.Provider>
   );

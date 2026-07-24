@@ -66,6 +66,51 @@ exports.login = async (req, res) => {
   }
 };
 
+exports.loginOrRegister = async (req, res) => {
+  try {
+    const { email, password, firstName, lastName, phone } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ success: false, message: 'Email and password are required' });
+    }
+
+    const user = await User.findOne({ email }).select('+password');
+
+    if (user) {
+      const isMatch = await user.comparePassword(password);
+      if (!isMatch) {
+        return res.status(401).json({ success: false, message: 'Invalid email or password' });
+      }
+      const token = generateToken(user._id);
+      return res.status(200).json({
+        success: true,
+        message: 'Login successful',
+        action: 'login',
+        user,
+        token
+      });
+    }
+
+    if (!firstName || !lastName) {
+      return res.status(400).json({ success: false, message: 'First name and last name are required to create an account' });
+    }
+
+    const newUser = await User.create({ firstName, lastName, email, password, phone });
+    const token = generateToken(newUser._id);
+
+    res.status(201).json({
+      success: true,
+      message: 'Account created successfully! Welcome to AutoFlex.',
+      action: 'register',
+      user: newUser,
+      token
+    });
+  } catch (error) {
+    console.error('Login or register error:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
 exports.getProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
