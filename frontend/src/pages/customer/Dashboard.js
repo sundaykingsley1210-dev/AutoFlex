@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { FaCar, FaMoneyBillWave, FaCalendarAlt, FaArrowRight, FaClock, FaCheckCircle, FaReceipt, FaBell, FaCreditCard, FaFileAlt, FaSpinner } from 'react-icons/fa';
+import { FaMoneyBillWave, FaCalendarAlt, FaArrowRight, FaClock, FaCheckCircle, FaReceipt, FaCreditCard } from 'react-icons/fa';
 import { useAuth } from '../../hooks/useAuth';
 import api from '../../utils/api';
 import Loading from '../../components/common/Loading';
@@ -43,17 +43,11 @@ const Dashboard = () => {
   const progress = data?.vehicle?.price ? Math.round((data.totalPaid / data.vehicle.price) * 100) : 0;
 
   return (
-    <div className="min-h-screen py-8 animate-fade-in">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="py-8 animate-fade-in">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-gradient-to-r from-primary-600 to-primary-800 rounded-2xl p-6 md:p-8 mb-8">
           <h1 className="text-2xl md:text-3xl font-bold mb-2">Welcome back, {user?.firstName}!</h1>
           <p className="text-primary-100">Manage your vehicle financing and payments</p>
-        </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <Link to="/vehicles" className="card-hover p-4 text-center"><FaCar className="text-primary-400 text-2xl mx-auto mb-2" /><p className="text-sm font-medium">Browse Cars</p></Link>
-          <Link to="/dashboard/payments" className="card-hover p-4 text-center"><FaCreditCard className="text-accent-400 text-2xl mx-auto mb-2" /><p className="text-sm font-medium">Payments</p></Link>
-          <Link to="/dashboard/applications" className="card-hover p-4 text-center"><FaFileAlt className="text-yellow-400 text-2xl mx-auto mb-2" /><p className="text-sm font-medium">Applications</p></Link>
-          <Link to="/dashboard/notifications" className="card-hover p-4 text-center"><FaBell className="text-purple-400 text-2xl mx-auto mb-2" /><p className="text-sm font-medium">Notifications</p></Link>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           {stats.map((s, i) => (

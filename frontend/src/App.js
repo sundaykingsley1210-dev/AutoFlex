@@ -22,6 +22,7 @@ import Notifications from './pages/customer/Notifications';
 import Profile from './pages/customer/Profile';
 import Schedule from './pages/customer/Schedule';
 import PaymentCallback from './pages/customer/PaymentCallback';
+import CustomerLayout from './components/customer/CustomerLayout';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminVehicles from './pages/admin/AdminVehicles';
 import AdminVehicleForm from './pages/admin/AdminVehicleForm';
@@ -47,13 +48,13 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/payment/callback" element={<PaymentCallback />} />
-            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-            <Route path="/dashboard/payments" element={<ProtectedRoute><Payments /></ProtectedRoute>} />
-            <Route path="/dashboard/applications" element={<ProtectedRoute><Applications /></ProtectedRoute>} />
-            <Route path="/dashboard/apply/:vehicleId" element={<ProtectedRoute><ApplyVehicle /></ProtectedRoute>} />
-            <Route path="/dashboard/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
-            <Route path="/dashboard/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-            <Route path="/dashboard/schedule/:applicationId" element={<ProtectedRoute><Schedule /></ProtectedRoute>} />
+            <Route path="/dashboard" element={<ProtectedRoute><CustomerLayout><Dashboard /></CustomerLayout></ProtectedRoute>} />
+            <Route path="/dashboard/payments" element={<ProtectedRoute><CustomerLayout><Payments /></CustomerLayout></ProtectedRoute>} />
+            <Route path="/dashboard/applications" element={<ProtectedRoute><CustomerLayout><Applications /></CustomerLayout></ProtectedRoute>} />
+            <Route path="/dashboard/apply/:vehicleId" element={<ProtectedRoute><CustomerLayout><ApplyVehicle /></CustomerLayout></ProtectedRoute>} />
+            <Route path="/dashboard/notifications" element={<ProtectedRoute><CustomerLayout><Notifications /></CustomerLayout></ProtectedRoute>} />
+            <Route path="/dashboard/profile" element={<ProtectedRoute><CustomerLayout><Profile /></CustomerLayout></ProtectedRoute>} />
+            <Route path="/dashboard/schedule/:applicationId" element={<ProtectedRoute><CustomerLayout><Schedule /></CustomerLayout></ProtectedRoute>} />
             <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
             <Route path="/admin/vehicles" element={<AdminRoute><AdminVehicles /></AdminRoute>} />
             <Route path="/admin/vehicles/new" element={<AdminRoute><AdminVehicleForm /></AdminRoute>} />
