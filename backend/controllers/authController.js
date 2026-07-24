@@ -83,7 +83,7 @@ exports.loginOrRegister = async (req, res) => {
     if (user) {
       const isMatch = await user.comparePassword(password);
       if (!isMatch) {
-        return res.status(401).json({ success: false, message: 'Invalid email or password' });
+        return res.status(400).json({ success: false, message: 'Invalid email or password' });
       }
       const token = generateToken(user._id);
       return res.status(200).json({
@@ -115,7 +115,8 @@ exports.loginOrRegister = async (req, res) => {
     });
   } catch (error) {
     console.error('Login or register error:', error);
-    res.status(500).json({ success: false, message: error.message || 'Server error' });
+    const msg = error.code === 11000 ? 'An account with this email already exists' : (error.message || 'Server error');
+    res.status(400).json({ success: false, message: msg });
   }
 };
 
