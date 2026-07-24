@@ -1,18 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { FaCar, FaMoneyBillWave, FaCalendarAlt, FaArrowRight, FaClock, FaCheckCircle, FaReceipt, FaBell, FaCreditCard, FaFileAlt } from 'react-icons/fa';
+import { FaCar, FaMoneyBillWave, FaCalendarAlt, FaArrowRight, FaClock, FaCheckCircle, FaReceipt, FaBell, FaCreditCard, FaFileAlt, FaSpinner } from 'react-icons/fa';
 import { useAuth } from '../../hooks/useAuth';
 import api from '../../utils/api';
 import Loading from '../../components/common/Loading';
+import PaymentModal from '../../components/common/PaymentModal';
 
 const Dashboard = () => {
   const { user } = useAuth();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [showPayment, setShowPayment] = useState(false);
+  const [applicationId, setApplicationId] = useState(null);
 
-  useEffect(() => { api.get('/dashboard').then(res => setData(res.data)).catch(() => {}).finally(() => setLoading(false)); }, []);
+  const fetchDashboard = () => api.get('/dashboard').then(res => setData(res.data)).catch(() => {});
 
-  const formatPrice = (p) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }).format(p || 0);
+  useEffect(() => {
+    fetchDashboard().finally(() => setLoading(false));
+  }, []);
+
+  useEffect(() => {
+    if (data?.vehicle) {
+      api.get('/dashboard').then(res => {
+        api.get('/applications').then(appRes => {
+          const apps = appRes.data.applications || [];
+          const active = apps.find(a => a.status === 'active' || a.status === 'approved');
+          if (active) setApplicationId(active._id);
+        }).catch(() => {});
+      }).catch(() => {});
+    }
+  }, [data]);
+
+  const formatPrice = (p) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'NGN', minimumFractionDigits: 0 }).format(p || 0);
   if (loading) return <div className="min-h-screen flex items-center justify-center"><Loading /></div>;
 
   const stats = [
@@ -46,6 +65,25 @@ const Dashboard = () => {
             </div>
           ))}
         </div>
+
+        {data?.vehicle && data?.nextPayment && applicationId && (
+          <div className="bg-gradient-to-r from-accent-600/20 to-primary-600/20 border border-accent-500/30 rounded-2xl p-6 mb-8">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div>
+                <p className="text-sm text-secondary-400 mb-1">Next Payment Due</p>
+                <p className="text-2xl font-bold">{formatPrice(data.nextPayment.amount)}</p>
+                <p className="text-sm text-secondary-400">Due {new Date(data.nextPayment.dueDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
+              </div>
+              <button
+                onClick={() => setShowPayment(true)}
+                className="btn-primary px-8 py-3 text-lg flex items-center gap-2"
+              >
+                <FaCreditCard /> Pay Now
+              </button>
+            </div>
+          </div>
+        )}
+
         {data?.vehicle && (
           <div className="card p-6 mb-8">
             <div className="flex items-center justify-between mb-4">
@@ -58,12 +96,27 @@ const Dashboard = () => {
             <div className="flex justify-between text-sm text-secondary-400 mb-4">
               <span>{formatPrice(data.totalPaid)} paid</span><span>{formatPrice(data.vehicle.price)} total</span>
             </div>
-            <div className="flex items-center gap-4">
-              <img src={data.vehicle.images?.[0] || 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=200'} alt="" className="w-16 h-16 rounded-lg object-cover" />
-              <div><p className="font-semibold">{data.vehicle.name}</p><p className="text-sm text-secondary-400">{data.vehicle.year} • {data.vehicle.brand}</p></div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <img src={data.vehicle.images?.[0] || 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=200'} alt="" className="w-16 h-16 rounded-lg object-cover" />
+                <div><p className="font-semibold">{data.vehicle.name}</p><p className="text-sm text-secondary-400">{data.vehicle.year} • {data.vehicle.brand}</p></div>
+              </div>
+              {applicationId && (
+                <Link to={`/dashboard/schedule/${applicationId}`} className="text-primary-400 text-sm flex items-center gap-1 hover:underline">View Schedule <FaArrowRight className="text-xs" /></Link>
+              )}
             </div>
           </div>
         )}
+
+        {!data?.vehicle && (
+          <div className="card p-8 mb-8 text-center">
+            <FaCar className="text-5xl text-secondary-600 mx-auto mb-4" />
+            <h2 className="text-xl font-bold mb-2">No Active Vehicle</h2>
+            <p className="text-secondary-400 mb-4">Browse our Tesla collection and apply for financing today.</p>
+            <Link to="/vehicles" className="btn-primary inline-flex items-center gap-2">Browse Vehicles <FaArrowRight /></Link>
+          </div>
+        )}
+
         <div className="card p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-semibold">Recent Payments</h2>
@@ -87,6 +140,18 @@ const Dashboard = () => {
           ) : <div className="text-center py-8"><FaReceipt className="text-4xl text-secondary-600 mx-auto mb-3" /><p className="text-secondary-400">No payments yet</p></div>}
         </div>
       </div>
+
+      {applicationId && (
+        <PaymentModal
+          isOpen={showPayment}
+          onClose={() => setShowPayment(false)}
+          applicationId={applicationId}
+          amount={data?.nextPayment?.amount || 0}
+          type="installment"
+          description={`Installment #${data?.nextPayment?.paymentNumber || ''} Payment`}
+          onPaymentSuccess={fetchDashboard}
+        />
+      )}
     </div>
   );
 };

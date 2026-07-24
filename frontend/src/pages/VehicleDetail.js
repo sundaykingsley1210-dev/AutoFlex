@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { FaCar, FaGasPump, FaCog, FaCalendarAlt, FaTachometerAlt, FaPalette, FaCogs, FaHorse, FaArrowLeft, FaCalculator, FaCheck } from 'react-icons/fa';
+import { FaCar, FaGasPump, FaCog, FaCalendarAlt, FaTachometerAlt, FaPalette, FaCogs, FaHorse, FaArrowLeft, FaCalculator, FaCheck, FaCreditCard } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import api from '../utils/api';
 import { useAuth } from '../hooks/useAuth';
 import Loading from '../components/common/Loading';
+import PaymentModal from '../components/common/PaymentModal';
 
 const VehicleDetail = () => {
   const { id } = useParams();
   const [vehicle, setVehicle] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeImg, setActiveImg] = useState(0);
+  const [showDepositPayment, setShowDepositPayment] = useState(false);
+  const [depositApplicationId, setDepositApplicationId] = useState(null);
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
@@ -90,7 +93,13 @@ const VehicleDetail = () => {
 
             <div className="flex gap-3 mb-6">
               {vehicle.availability === 'available' && (
-                <button onClick={() => { if (!isAuthenticated) { toast.info('Please login to apply'); navigate('/login'); return; } navigate(`/dashboard/apply/${vehicle._id}`); }} className="btn-primary flex-1">Apply Now</button>
+                <>
+                  <button onClick={() => { if (!isAuthenticated) { toast.info('Please login to apply'); navigate('/login'); return; } navigate(`/dashboard/apply/${vehicle._id}`); }} className="btn-primary flex-1">Apply Now</button>
+                  <button onClick={() => {
+                    if (!isAuthenticated) { toast.info('Please login to apply'); navigate('/login'); return; }
+                    navigate(`/dashboard/apply/${vehicle._id}`);
+                  }} className="btn-secondary flex-1 flex items-center justify-center gap-2"><FaCreditCard /> Quick Deposit</button>
+                </>
               )}
               <Link to={`/calculator?vehicle=${vehicle._id}`} className="btn-secondary flex-1 flex items-center justify-center gap-2"><FaCalculator /> Calculate Payment</Link>
             </div>
